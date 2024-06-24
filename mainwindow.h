@@ -2,6 +2,7 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QSet>
 #include "dialog_add_literals.h"
 
 QT_BEGIN_NAMESPACE
@@ -15,14 +16,19 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
+    friend class Dialog_add_Literals;
+    QString getLiteral();
 
 private:
     Ui::MainWindow *ui;
-    QVector<QString> literals;//массив литералов
-    QVector<QString> formulas;//массив допущений
+    QSet<QString> literals;//массив литералов
+    QSet<QString> formulas;//массив допущений
     Dialog_add_Literals* addLiterals;
 
 public slots:
     void showAddLiterals();
+    void closeAddLiterals();
+    void saveNewLiteral();
+
 };
 #endif // MAINWINDOW_H

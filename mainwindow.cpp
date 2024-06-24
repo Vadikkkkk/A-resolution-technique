@@ -12,14 +12,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     addLiterals = new Dialog_add_Literals;
 
-    literals.append("a");
-    literals.append("b");
-    for (int i = 0; i < literals.size() ;i++) {
-        ui->literals->addItem(literals[i]);
-    }
-
 
     connect(ui->add_literal, &QPushButton::clicked, this, &MainWindow::showAddLiterals);
+    connect(addLiterals, &Dialog_add_Literals::closeSignal, this, &MainWindow::closeAddLiterals);
+    connect(addLiterals, &Dialog_add_Literals::saveSignal, this, &MainWindow::saveNewLiteral);
 }
 
 MainWindow::~MainWindow()
@@ -30,6 +26,29 @@ MainWindow::~MainWindow()
 void MainWindow::showAddLiterals()
 {
     setEnabled(false);
+    addLiterals->clearLine();
     addLiterals->show();
+}
+
+void MainWindow::closeAddLiterals()
+{
+    setEnabled(true);
+    addLiterals->reject();
+}
+
+void MainWindow::saveNewLiteral()
+{
+    setEnabled(true);
+    ui->literals->clear();
+    if (addLiterals->getLiteral().size() == 1){
+        literals.insert(addLiterals->getLiteral());
+        addLiterals->reject();
+        for (const QString &str : literals) {
+            ui->literals->addItem(str);
+        }
+    }
+    else{
+        addLiterals->reject();
+    }
 }
 
