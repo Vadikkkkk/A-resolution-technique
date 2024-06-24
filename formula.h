@@ -17,10 +17,29 @@ class formula : public QDialog
 public:
     explicit formula(QWidget *parent = nullptr);
     ~formula();
+    QVector<QString> l;
+    void updateButtons();
+    void addButtonsToLayout(const QVector<QString> &vector);
+
 
 private:
     Ui::formula *ui;
-    QSet<QString> l;
+    int row, column;
+    bool check;
+
+    QVector<QString> buttons;
+
+
+public slots:
+    void close();
+    void onButtonClicked(const QString &text);
+
+signals:
+    void closeSignal();
+
+protected:
+    void closeEvent(QCloseEvent* event) override;
+
 };
 
 #endif // FORMULA_H

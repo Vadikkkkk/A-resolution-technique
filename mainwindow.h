@@ -3,7 +3,9 @@
 
 #include <QMainWindow>
 #include <QSet>
-#include "dialog_add_literals.h"
+#include <QMessageBox>
+
+#include "formula.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -25,16 +27,21 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QSet<QString> literals;//массив литералов
+    QVector<QString> literals;//массив литералов
+    int count;
     QSet<QString> formulas;//массив допущений
 
-    Dialog_add_Literals* addLiterals;
+    formula* addFormula;
+
+    void updateList();
 
 
 public slots:
-    void showAddLiterals();
-    void closeAddLiterals();
-    void saveNewLiteral();
+    void addLiteral();
+    void deleteLiteral();
+
+    void showAddFormula();
+    void closeAddFormula();
 
 
 

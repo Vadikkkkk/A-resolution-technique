@@ -27,40 +27,54 @@
    </property>
   </widget>
   <widget class="QLineEdit" name="lineEdit">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>40</y>
+     <y>210</y>
      <width>371</width>
      <height>24</height>
     </rect>
    </property>
   </widget>
-  <widget class="QPushButton" name="pushButton">
+  <widget class="QWidget" name="gridLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>80</x>
-     <y>250</y>
-     <width>80</width>
-     <height>24</height>
+     <x>10</x>
+     <y>30</y>
+     <width>371</width>
+     <height>161</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Отмена </string>
-   </property>
+   <layout class="QGridLayout" name="gridLayout"/>
   </widget>
-  <widget class="QPushButton" name="pushButton_2">
+  <widget class="QWidget" name="horizontalLayoutWidget">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>10</x>
      <y>250</y>
-     <width>80</width>
-     <height>24</height>
+     <width>371</width>
+     <height>41</height>
     </rect>
    </property>
-   <property name="text">
-    <string>Сохранить</string>
-   </property>
+   <layout class="QHBoxLayout" name="horizontalLayout">
+    <item>
+     <widget class="QPushButton" name="close_button">
+      <property name="text">
+       <string>Отмена</string>
+      </property>
+     </widget>
+    </item>
+    <item>
+     <widget class="QPushButton" name="save_button">
+      <property name="text">
+       <string>Сохранить</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>
