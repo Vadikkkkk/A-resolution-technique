@@ -29,11 +29,15 @@ private:
     Ui::MainWindow *ui;
     QVector<QString> literals;//массив литералов
     int count;
-    QSet<QString> formulas;//массив допущений
+    QVector<QString> formulas;//массив допущений
+    QString theorem;
+    QString lastButton;
 
     formula* addFormula;
 
     void updateList();
+    void updateFormulas();
+    void updateTheorem();
 
 
 public slots:
@@ -43,6 +47,10 @@ public slots:
     void showAddFormula();
     void closeAddFormula();
 
+    void saveFormula();
+    void deleteFormula();
+
+    void deleteTheorem();
 
 
 

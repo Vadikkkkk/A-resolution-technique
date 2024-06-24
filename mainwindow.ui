@@ -131,7 +131,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QListView" name="listView">
+          <widget class="QListWidget" name="formulas">
            <property name="enabled">
             <bool>true</bool>
            </property>
@@ -140,9 +140,6 @@
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
-           </property>
-           <property name="mouseTracking">
-            <bool>true</bool>
            </property>
           </widget>
          </item>
@@ -209,7 +206,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QListView" name="listView_2">
+      <widget class="QListWidget" name="theorem">
        <property name="sizePolicy">
         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
          <horstretch>0</horstretch>
@@ -221,7 +218,7 @@
      <item>
       <layout class="QHBoxLayout" name="horizontalLayout_3">
        <item>
-        <widget class="QPushButton" name="pushButton_6">
+        <widget class="QPushButton" name="addTheorem">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>
@@ -229,12 +226,12 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Добавить гипотезу</string>
+          <string>Задать гипотезу</string>
          </property>
         </widget>
        </item>
        <item>
-        <widget class="QPushButton" name="pushButton_5">
+        <widget class="QPushButton" name="deleteTheorem">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
            <horstretch>0</horstretch>

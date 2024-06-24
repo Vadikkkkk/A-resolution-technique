@@ -1,5 +1,6 @@
 #include "formula.h"
 #include "ui_formula.h"
+#include <QMessageBox>
 
 formula::formula(QWidget *parent) :
     QDialog(parent), row(0), column(0),
@@ -8,6 +9,10 @@ formula::formula(QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->close_button, &QPushButton::clicked, this, &formula::close);
+    connect(ui->backspace, &QPushButton::clicked, this, &formula::backspace);
+    connect(ui->save_button, &QPushButton::clicked, this, &formula::save);
+    connect(this, &formula::backspacePressed, this, &formula::backspace);
+
     buttons << "!" << "+" << "*" << "->" << "(" << ")";
     addButtonsToLayout(buttons);
 
@@ -30,6 +35,45 @@ void formula::addButtonsToLayout(const QVector<QString> &vector)
     }
 }
 
+QString formula::getFormula()
+{
+    return ui->lineEdit->text();
+}
+
+void formula::clearLine()
+{
+    ui->lineEdit->clear();
+}
+
+bool formula::check()
+{
+    auto isPartOfSet = [](const QString &ch, const QVector<QString> &set) -> bool {
+            return set.contains(ch);
+        };
+
+    QVector<QString> specialSet = {"*", "+", "!", "->"};
+    QString str = ui->lineEdit->text();
+
+    if(str[0] == "+" || str[0] == "*" || str[0] == "-") return false;
+    for (int i = 0; i < str.length(); ++i) {
+        // Check if the current character and the next character are both in l
+        if (i < str.length() - 1 && isPartOfSet(str.mid(i, 1), l) && isPartOfSet(str.mid(i + 1, 1), l)) {
+            return false;
+        }
+
+        // Check if the current character and the next character are both in specialSet
+        for (const QString &special : specialSet) {
+            if (i < str.length() - special.length() && str.mid(i, special.length()) == special &&
+                str.mid(i + special.length(), special.length()) == special) {
+                return false;
+            }
+        }
+    }
+
+
+    return true;
+}
+
 formula::~formula()
 {
     delete ui;
@@ -37,6 +81,7 @@ formula::~formula()
 
 void formula::updateButtons()
 {
+
     QLayoutItem *item;
     while ((item = ui->gridLayout->takeAt(0)) != nullptr) {
         delete item->widget();
@@ -60,6 +105,30 @@ void formula::onButtonClicked(const QString &text)
 {
     QString currentText = ui->lineEdit->text();
     ui->lineEdit->setText(currentText + text);
+}
+
+void formula::backspace()
+{
+    QString currentText = ui->lineEdit->text();
+    if(!currentText.isEmpty()){
+        currentText.chop(1);
+        ui->lineEdit->clear();
+        ui->lineEdit->setText(currentText);
+    }
+    else{
+        QMessageBox::information(this, "Ошибка!", "Формула пуста!");
+    }
+}
+
+void formula::save()
+{
+    if(check()){
+        emit saveSignal();
+    }
+    else{
+        QMessageBox::information(this, "Ошибка!", "Неверная формула!");
+    }
+
 }
 
 void formula::closeEvent(QCloseEvent *event)

@@ -4,6 +4,8 @@
 #include <QDialog>
 #include <QSet>
 #include <QString>
+#include <QKeyEvent>
+
 
 
 namespace Ui {
@@ -20,25 +22,43 @@ public:
     QVector<QString> l;
     void updateButtons();
     void addButtonsToLayout(const QVector<QString> &vector);
-
+    QString getFormula();
+    void clearLine();
+    bool check();
 
 private:
     Ui::formula *ui;
     int row, column;
-    bool check;
+
 
     QVector<QString> buttons;
+
+
+
 
 
 public slots:
     void close();
     void onButtonClicked(const QString &text);
+    void backspace();
+
+    void save();
 
 signals:
     void closeSignal();
+    void saveSignal();
+    void backspacePressed();
 
 protected:
     void closeEvent(QCloseEvent* event) override;
+    void keyPressEvent(QKeyEvent *event) override
+    {
+        if (event->key() == Qt::Key_Backspace) {
+            emit backspacePressed();
+        } else {
+            QWidget::keyPressEvent(event);
+        }
+    }
 
 };
 
