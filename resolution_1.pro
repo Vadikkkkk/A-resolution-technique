@@ -10,15 +10,18 @@ CONFIG += c++11
 
 SOURCES += \
     dialog_add_literals.cpp \
+    formula.cpp \
     main.cpp \
     mainwindow.cpp
 
 HEADERS += \
     dialog_add_literals.h \
+    formula.h \
     mainwindow.h
 
 FORMS += \
     dialog_add_literals.ui \
+    formula.ui \
     mainwindow.ui
 
 # Default rules for deployment.

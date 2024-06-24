@@ -2,6 +2,7 @@
 #include "ui_mainwindow.h"
 #include "dialog_add_literals.h"
 
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow)
@@ -13,15 +14,30 @@ MainWindow::MainWindow(QWidget *parent)
     addLiterals = new Dialog_add_Literals;
 
 
+
     connect(ui->add_literal, &QPushButton::clicked, this, &MainWindow::showAddLiterals);
+
+
+
+
     connect(addLiterals, &Dialog_add_Literals::closeSignal, this, &MainWindow::closeAddLiterals);
     connect(addLiterals, &Dialog_add_Literals::saveSignal, this, &MainWindow::saveNewLiteral);
+
+
+
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+/*
+const QSet<QString> &MainWindow::getLiterals() const
+{
+    return literals;
+}
+*/
 
 void MainWindow::showAddLiterals()
 {
@@ -51,4 +67,7 @@ void MainWindow::saveNewLiteral()
         addLiterals->reject();
     }
 }
+
+
+
 
