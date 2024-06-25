@@ -89,6 +89,7 @@ void MainWindow::showAddFormula()
         lastButton = ui->addTheorem->text();
         setEnabled(false);
         addFormula->clearLine();
+        addFormula->braketsCount = 0;
         addFormula->l = literals;
         addFormula->updateButtons();
         addFormula->show();
@@ -100,6 +101,7 @@ void MainWindow::showAddFormula()
         lastButton = ui->add_formula->text();
         setEnabled(false);
         addFormula->clearLine();
+        addFormula->braketsCount = 0;
         addFormula->l = literals;
         addFormula->updateButtons();
         addFormula->show();

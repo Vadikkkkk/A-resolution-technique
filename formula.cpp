@@ -3,7 +3,7 @@
 #include <QMessageBox>
 
 formula::formula(QWidget *parent) :
-    QDialog(parent), row(0), column(0),
+    QDialog(parent), row(0), column(0), braketsCount(0),
     ui(new Ui::formula)
 {
     ui->setupUi(this);
@@ -69,6 +69,8 @@ bool formula::check()
             }
         }
     }
+    if (braketsCount) return false;
+
 
 
     return true;
@@ -104,13 +106,28 @@ void formula::close()
 void formula::onButtonClicked(const QString &text)
 {
     QString currentText = ui->lineEdit->text();
-    ui->lineEdit->setText(currentText + text);
+    if(text == "("){
+        braketsCount++;
+        ui->lineEdit->setText(currentText + text);
+    }
+    else if (text == ")" && braketsCount == 0){
+        QMessageBox::information(this, "Ошибка!", "Нет открытых скобок!");
+    }
+    else if (text == ")" && braketsCount > 0){
+        braketsCount--;
+        ui->lineEdit->setText(currentText + text);
+    }
+    else {
+        ui->lineEdit->setText(currentText + text);
+    }
 }
 
 void formula::backspace()
 {
     QString currentText = ui->lineEdit->text();
     if(!currentText.isEmpty()){
+        if(currentText.at(currentText.length() - 1) == ')') braketsCount++;
+        if(currentText.at(currentText.length() - 1) == '(') braketsCount--;
         currentText.chop(1);
         ui->lineEdit->clear();
         ui->lineEdit->setText(currentText);

@@ -11,15 +11,18 @@ CONFIG += c++11
 SOURCES += \
     formula.cpp \
     main.cpp \
-    mainwindow.cpp
+    mainwindow.cpp \
+    resolution.cpp
 
 HEADERS += \
     formula.h \
-    mainwindow.h
+    mainwindow.h \
+    resolution.h
 
 FORMS += \
     formula.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    resolution.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

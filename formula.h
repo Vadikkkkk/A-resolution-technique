@@ -25,10 +25,12 @@ public:
     QString getFormula();
     void clearLine();
     bool check();
+    int braketsCount;
 
 private:
     Ui::formula *ui;
     int row, column;
+
 
 
     QVector<QString> buttons;
