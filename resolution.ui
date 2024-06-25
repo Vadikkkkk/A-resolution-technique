@@ -10,8 +10,17 @@
     <height>300</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>400</width>
+    <height>300</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Результат</string>
+  </property>
+  <property name="autoFillBackground">
+   <bool>false</bool>
   </property>
   <widget class="QLabel" name="label">
    <property name="geometry">
@@ -23,7 +32,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>Допущения:</string>
+    <string>Множество S:</string>
    </property>
   </widget>
   <widget class="QListWidget" name="formulas">
@@ -31,7 +40,7 @@
     <rect>
      <x>10</x>
      <y>30</y>
-     <width>281</width>
+     <width>371</width>
      <height>192</height>
     </rect>
    </property>
@@ -39,7 +48,7 @@
   <widget class="QPushButton" name="close">
    <property name="geometry">
     <rect>
-     <x>210</x>
+     <x>300</x>
      <y>250</y>
      <width>80</width>
      <height>24</height>
@@ -54,7 +63,7 @@
     <rect>
      <x>20</x>
      <y>250</y>
-     <width>161</width>
+     <width>251</width>
      <height>16</height>
     </rect>
    </property>

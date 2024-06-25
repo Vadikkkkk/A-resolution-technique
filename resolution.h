@@ -32,7 +32,7 @@ private:
     void applyResolution();
     QString negateLiteral(const QString& literal);
 
-    QString negateCNF(const QString& cnf);
+    void negateCNF(const QString& cnf);
     void formulaToS(const QString& str);
 
 

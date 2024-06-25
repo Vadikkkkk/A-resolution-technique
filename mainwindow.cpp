@@ -165,13 +165,18 @@ void MainWindow::deleteTheorem()
 
 void MainWindow::showResolution()
 {
-    setEnabled(false);
-    res->literals = this->literals;
-    res->formulas = this->formulas;
-    res->theorem = this->theorem;
-    res->S.clear();
-    res->update();
-    res->show();
+    if (ui->theorem->count()){
+        setEnabled(false);
+        res->literals = this->literals;
+        res->formulas = this->formulas;
+        res->theorem = this->theorem;
+        res->S.clear();
+        res->update();
+        res->show();
+    }
+    else{
+        QMessageBox::information(this, "Ошибка!", "Введите гипотезу!");
+    }
 }
 
 void MainWindow::closeResolution()

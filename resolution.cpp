@@ -21,8 +21,9 @@ void resolution::update()
     for (const QString& str : formulas) {
         formulaToS(str);
     }
-    QString tmp = negateCNF(theorem);
-    S.append(tmp);
+    negateCNF(theorem);
+
+
     applyResolution();
     ui->formulas->addItems(S);
     if (S.contains("0")) ui->result->setText("Теорема " + theorem + " верна!");
@@ -108,7 +109,7 @@ QString resolution::negateLiteral(const QString &literal)
     }
 }
 
-QString resolution::negateCNF(const QString &cnf)
+void resolution::negateCNF(const QString &cnf)
 {
     QStringList conjuncts = cnf.split('*');
     QStringList negatedConjuncts;
@@ -125,11 +126,17 @@ QString resolution::negateCNF(const QString &cnf)
 
         // Объединение инвертированных литералов в новый дизъюнкт
 
-        negatedConjuncts.append('(' + negatedLiterals.join('*') + ')');
+        //negatedConjuncts.append('(' + negatedLiterals.join('*') + ')');
+        S.append(negatedLiterals);
     }
 
     // Объединение инвертированных конъюнктов в новую дизъюнкцию
-    return negatedConjuncts.join('+');
+    /*
+    QString res = negatedConjuncts.join('+');
+    res.remove('(');
+    res.remove(')');
+    return res;
+    */
 }
 
 void resolution::formulaToS(const QString &str)
