@@ -23,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent)
     connect(addFormula, &formula::closeSignal, this, &MainWindow::closeAddFormula);
     connect(addFormula, &formula::saveSignal, this, &MainWindow::saveFormula);
 
+    connect(res, &resolution::closeSignal, this, &MainWindow::closeResolution);
+
 }
 
 MainWindow::~MainWindow()
@@ -167,7 +169,14 @@ void MainWindow::showResolution()
     res->literals = this->literals;
     res->formulas = this->formulas;
     res->theorem = this->theorem;
+    res->update();
     res->show();
+}
+
+void MainWindow::closeResolution()
+{
+    setEnabled(true);
+    res->reject();
 }
 
 

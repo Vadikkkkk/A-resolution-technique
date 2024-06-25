@@ -51,7 +51,14 @@ protected:
     {
         if (event->key() == Qt::Key_Backspace) {
             emit backspacePressed();
-        } else {
+        }
+        else if (event->key() == Qt::Key_Return){
+            emit saveSignal();
+        }
+        else if (event->key() == Qt::Key_Escape){
+            emit closeSignal();
+        }
+        else {
             QWidget::keyPressEvent(event);
         }
     }

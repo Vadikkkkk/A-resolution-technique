@@ -13,7 +13,7 @@ formula::formula(QWidget *parent) :
     connect(ui->save_button, &QPushButton::clicked, this, &formula::save);
     connect(this, &formula::backspacePressed, this, &formula::backspace);
 
-    buttons << "!" << "+" << "*" << "->" << "(" << ")";
+    buttons << "!" << "+" << "*" << "->" << "==" << "(" << ")";
     addButtonsToLayout(buttons);
 
 }
@@ -51,15 +51,22 @@ bool formula::check()
             return set.contains(ch);
         };
 
-    QVector<QString> specialSet = {"*", "+", "->"};
+    QVector<QString> specialSet = {"*", "+", "->", "=="};
     QString str = ui->lineEdit->text();
+    int eq = 0;
+    bool ch = true;
 
-    if(braketsCount || str[0] == "+" || str[0] == "*" || str[0] == "-") return false;
+    if(braketsCount || str[0] == "+" || str[0] == "*" || str.contains("!+") ||
+            str.contains("!*") || str.contains("!->") || str.contains("(*")
+            || str.contains("(+") || str.contains("(-")) return false;
+    if(str.contains("-") && !str.contains("->")) return false;
     for (int i = 0; i < str.length(); ++i) {
         // Check if the current character and the next character are both in l
         if (i < str.length() - 1 && isPartOfSet(str.mid(i, 1), l) && isPartOfSet(str.mid(i + 1, 1), l)) {
             return false;
         }
+        if (str[i] == "=") eq++;
+        if (l.contains(QString(str[i]))) ch = false;
 
         // Check if the current character and the next character are both in specialSet
         for (const QString &special : specialSet) {
@@ -70,8 +77,11 @@ bool formula::check()
             if (str.endsWith(special) || str.endsWith("!")) return false;
         }
     }
+    if(eq % 2 || ch) return false;
+
     return true;
 }
+
 
 formula::~formula()
 {
@@ -103,6 +113,7 @@ void formula::close()
 void formula::onButtonClicked(const QString &text)
 {
     QString currentText = ui->lineEdit->text();
+
     if(text == "("){
         braketsCount++;
         ui->lineEdit->setText(currentText + text);
@@ -113,6 +124,9 @@ void formula::onButtonClicked(const QString &text)
     else if (text == ")" && braketsCount > 0){
         braketsCount--;
         ui->lineEdit->setText(currentText + text);
+    }
+    else if (currentText.isEmpty() && !l.contains(text) && text != "!"){
+
     }
     else {
         ui->lineEdit->setText(currentText + text);

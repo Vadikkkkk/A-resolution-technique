@@ -50,6 +50,7 @@ public slots:
     void deleteTheorem();
 
     void showResolution();
+    void closeResolution();
 
 
 };
