@@ -169,6 +169,7 @@ void MainWindow::showResolution()
     res->literals = this->literals;
     res->formulas = this->formulas;
     res->theorem = this->theorem;
+    res->S.clear();
     res->update();
     res->show();
 }

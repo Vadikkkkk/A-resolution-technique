@@ -23,19 +23,23 @@ private:
     Ui::resolution *ui;
     QVector<QString> literals;//массив литералов
     QVector<QString> formulas;//массив допущений
+    QStringList S;//дизъюнкты
     QString theorem;
 
 
+    QSet<QString> splitDisjunct(const QString& str);
+    QString combineDisjuncts(const QSet<QString>& disjunct1, const QSet<QString>& disjunct2);
+    void applyResolution();
+    QString negateLiteral(const QString& literal);
+
+    QString negateCNF(const QString& cnf);
+    void formulaToS(const QString& str);
 
 
-    QString eliminateImplication(const QString &str);
-    QString eliminateEq (const QString &str);
-    QString toNegationNormalForm(const QString &str);
-    QVector<QSet<QString>> toCNF(const QString &str);
-    bool Resolution(const QVector<QSet<QString>> &clauses);
+    void removeBrackets(QString& str);
 
-    bool checkTheorem(const QVector<QString> &literals, const QVector<QString> &formulas,
-                      const QString &theorem);
+
+
 
 public slots:
     void close();
