@@ -31,13 +31,7 @@ private:
     Ui::formula *ui;
     int row, column;
 
-
-
     QVector<QString> buttons;
-
-
-
-
 
 public slots:
     void close();

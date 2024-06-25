@@ -6,14 +6,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
     , ui(new Ui::MainWindow), count(0)
 {
-
-
     ui->setupUi(this);
 
-
     addFormula = new formula;
-
-
+    res = new resolution;
 
     connect(ui->add_literal, &QPushButton::clicked, this, &MainWindow::addLiteral);
     connect(ui->add_formula, &QPushButton::clicked, this, &MainWindow::showAddFormula);
@@ -22,6 +18,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->delete_literal, &QPushButton::clicked, this, &MainWindow::deleteLiteral);
     connect(ui->delete_formula, &QPushButton::clicked, this, &MainWindow::deleteFormula);
     connect(ui->deleteTheorem, &QPushButton::clicked, this, &MainWindow::deleteTheorem);
+    connect(ui->resolution, &QPushButton::clicked, this, &MainWindow::showResolution);
 
     connect(addFormula, &formula::closeSignal, this, &MainWindow::closeAddFormula);
     connect(addFormula, &formula::saveSignal, this, &MainWindow::saveFormula);
@@ -31,6 +28,8 @@ MainWindow::MainWindow(QWidget *parent)
 MainWindow::~MainWindow()
 {
     delete ui;
+    delete addFormula;
+    delete res;
 }
 
 void MainWindow::updateList()
@@ -67,8 +66,6 @@ void MainWindow::addLiteral()
         QMessageBox::information(this, "Ошибка!", "Слишком много литералов!");
     }
 }
-
-
 
 void MainWindow::deleteLiteral()
 {
@@ -162,6 +159,15 @@ void MainWindow::deleteTheorem()
 {
     theorem.clear();
     ui->theorem->clear();
+}
+
+void MainWindow::showResolution()
+{
+    setEnabled(false);
+    res->literals = this->literals;
+    res->formulas = this->formulas;
+    res->theorem = this->theorem;
+    res->show();
 }
 
 

@@ -6,6 +6,10 @@ resolution::resolution(QWidget *parent) :
     ui(new Ui::resolution)
 {
     ui->setupUi(this);
+
+
+
+
 }
 
 resolution::~resolution()

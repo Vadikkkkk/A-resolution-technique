@@ -51,10 +51,10 @@ bool formula::check()
             return set.contains(ch);
         };
 
-    QVector<QString> specialSet = {"*", "+", "!", "->"};
+    QVector<QString> specialSet = {"*", "+", "->"};
     QString str = ui->lineEdit->text();
 
-    if(str[0] == "+" || str[0] == "*" || str[0] == "-") return false;
+    if(braketsCount || str[0] == "+" || str[0] == "*" || str[0] == "-") return false;
     for (int i = 0; i < str.length(); ++i) {
         // Check if the current character and the next character are both in l
         if (i < str.length() - 1 && isPartOfSet(str.mid(i, 1), l) && isPartOfSet(str.mid(i + 1, 1), l)) {
@@ -67,12 +67,9 @@ bool formula::check()
                 str.mid(i + special.length(), special.length()) == special) {
                 return false;
             }
+            if (str.endsWith(special) || str.endsWith("!")) return false;
         }
     }
-    if (braketsCount) return false;
-
-
-
     return true;
 }
 

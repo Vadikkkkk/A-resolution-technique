@@ -6,6 +6,7 @@
 #include <QMessageBox>
 
 #include "formula.h"
+#include "resolution.h"
 
 
 QT_BEGIN_NAMESPACE
@@ -19,11 +20,6 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
-    friend class Dialog_add_Literals;
-
-    QString getLiteral();
-
-    //const QSet<QString>& getLiterals() const;
 
 private:
     Ui::MainWindow *ui;
@@ -34,6 +30,7 @@ private:
     QString lastButton;
 
     formula* addFormula;
+    resolution *res;
 
     void updateList();
     void updateFormulas();
@@ -52,7 +49,7 @@ public slots:
 
     void deleteTheorem();
 
-
+    void showResolution();
 
 
 };
