@@ -8,14 +8,7 @@ formula::formula(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    connect(ui->close_button, &QPushButton::clicked, this, &formula::close);
-    connect(ui->backspace, &QPushButton::clicked, this, &formula::backspace);
-    connect(ui->save_button, &QPushButton::clicked, this, &formula::save);
-    connect(this, &formula::backspacePressed, this, &formula::backspace);
-
-    buttons << "!" << "+" << "*" << "->" << "==" << "(" << ")";
-    addButtonsToLayout(buttons);
-
+    connectAllButtons();
 }
 
 
@@ -59,7 +52,9 @@ bool formula::check()
     if(braketsCount || str[0] == "+" || str[0] == "*" || str.contains("!+") ||
             str.contains("!*") || str.contains("!->") || str.contains("(*")
             || str.contains("(+") || str.contains("(-")) return false;
+
     if(str.contains("-") && !str.contains("->")) return false;
+
     for (int i = 0; i < str.length(); ++i) {
         // Check if the current character and the next character are both in l
         if (i < str.length() - 1 && isPartOfSet(str.mid(i, 1), l) && isPartOfSet(str.mid(i + 1, 1), l)) {
@@ -80,6 +75,17 @@ bool formula::check()
     if(eq % 2 || ch) return false;
 
     return true;
+}
+
+void formula::connectAllButtons()
+{
+    connect(ui->close_button, &QPushButton::clicked, this, &formula::close);
+    connect(ui->backspace, &QPushButton::clicked, this, &formula::backspace);
+    connect(ui->save_button, &QPushButton::clicked, this, &formula::save);
+    connect(this, &formula::backspacePressed, this, &formula::backspace);
+
+    buttons << "!" << "+" << "*" << "->" << "==" << "(" << ")";
+    addButtonsToLayout(buttons);
 }
 
 
@@ -162,4 +168,20 @@ void formula::save()
 void formula::closeEvent(QCloseEvent *event)
 {
     emit closeSignal();
+}
+
+void formula::keyPressEvent(QKeyEvent *event)
+{
+    if (event->key() == Qt::Key_Backspace) {
+        emit backspacePressed();
+    }
+    else if (event->key() == Qt::Key_Return){
+        emit saveSignal();
+    }
+    else if (event->key() == Qt::Key_Escape){
+        emit closeSignal();
+    }
+    else {
+        QWidget::keyPressEvent(event);
+    }
 }

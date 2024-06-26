@@ -33,6 +33,8 @@ private:
 
     QVector<QString> buttons;
 
+    void connectAllButtons();
+
 public slots:
     void close();
     void onButtonClicked(const QString &text);
@@ -47,21 +49,7 @@ signals:
 
 protected:
     void closeEvent(QCloseEvent* event) override;
-    void keyPressEvent(QKeyEvent *event) override
-    {
-        if (event->key() == Qt::Key_Backspace) {
-            emit backspacePressed();
-        }
-        else if (event->key() == Qt::Key_Return){
-            emit saveSignal();
-        }
-        else if (event->key() == Qt::Key_Escape){
-            emit closeSignal();
-        }
-        else {
-            QWidget::keyPressEvent(event);
-        }
-    }
+    void keyPressEvent(QKeyEvent *event) override;
 
 };
 

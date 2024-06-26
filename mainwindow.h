@@ -23,18 +23,22 @@ public:
 
 private:
     Ui::MainWindow *ui;
-    QVector<QString> literals;//массив литералов
+
     int count;
+    QVector<QString> literals;//массив литералов
     QVector<QString> formulas;//массив допущений
-    QString theorem;
+    QString theorem;//теорема
+
     QString lastButton;
 
     formula* addFormula;
     resolution *res;
 
-    void updateList();
-    void updateFormulas();
-    void updateTheorem();
+    void updateList();//обновляет список переменных
+    void updateFormulas();//обновляет список формул
+    void updateTheorem();//обновляет теорему
+
+    void connectAllButtons();
 
 
 public slots:
@@ -51,7 +55,6 @@ public slots:
 
     void showResolution();
     void closeResolution();
-
 
 };
 #endif // MAINWINDOW_H

@@ -32,13 +32,15 @@ private:
     void applyResolution();
     QString negateLiteral(const QString& literal);
 
-    void negateCNF(const QString& cnf);
+    QString negateTheorem(const QString& dnf);
     void formulaToS(const QString& str);
 
 
     void removeBrackets(QString& str);
 
+    QString joinDisjunct(const QSet<QString>& disjunct);
 
+    void printResult();
 
 
 public slots:
@@ -47,8 +49,6 @@ public slots:
 signals:
     void closeSignal();
 
-    //QString removeImplication(const QString& str);
-    //void removeImpFromFormulas();
 protected:
     void closeEvent(QCloseEvent* event) override;
 };

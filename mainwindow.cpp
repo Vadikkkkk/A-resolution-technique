@@ -11,20 +11,7 @@ MainWindow::MainWindow(QWidget *parent)
     addFormula = new formula;
     res = new resolution;
 
-    connect(ui->add_literal, &QPushButton::clicked, this, &MainWindow::addLiteral);
-    connect(ui->add_formula, &QPushButton::clicked, this, &MainWindow::showAddFormula);
-    connect(ui->addTheorem,&QPushButton::clicked, this, &MainWindow::showAddFormula);
-
-    connect(ui->delete_literal, &QPushButton::clicked, this, &MainWindow::deleteLiteral);
-    connect(ui->delete_formula, &QPushButton::clicked, this, &MainWindow::deleteFormula);
-    connect(ui->deleteTheorem, &QPushButton::clicked, this, &MainWindow::deleteTheorem);
-    connect(ui->resolution, &QPushButton::clicked, this, &MainWindow::showResolution);
-
-    connect(addFormula, &formula::closeSignal, this, &MainWindow::closeAddFormula);
-    connect(addFormula, &formula::saveSignal, this, &MainWindow::saveFormula);
-
-    connect(res, &resolution::closeSignal, this, &MainWindow::closeResolution);
-
+    connectAllButtons();
 }
 
 MainWindow::~MainWindow()
@@ -54,6 +41,23 @@ void MainWindow::updateTheorem()
 {
     ui->theorem->clear();
     ui->theorem->addItem(this->theorem);
+}
+
+void MainWindow::connectAllButtons()
+{
+    connect(ui->add_literal, &QPushButton::clicked, this, &MainWindow::addLiteral);
+    connect(ui->add_formula, &QPushButton::clicked, this, &MainWindow::showAddFormula);
+    connect(ui->addTheorem,&QPushButton::clicked, this, &MainWindow::showAddFormula);
+
+    connect(ui->delete_literal, &QPushButton::clicked, this, &MainWindow::deleteLiteral);
+    connect(ui->delete_formula, &QPushButton::clicked, this, &MainWindow::deleteFormula);
+    connect(ui->deleteTheorem, &QPushButton::clicked, this, &MainWindow::deleteTheorem);
+    connect(ui->resolution, &QPushButton::clicked, this, &MainWindow::showResolution);
+
+    connect(addFormula, &formula::closeSignal, this, &MainWindow::closeAddFormula);
+    connect(addFormula, &formula::saveSignal, this, &MainWindow::saveFormula);
+
+    connect(res, &resolution::closeSignal, this, &MainWindow::closeResolution);
 }
 
 void MainWindow::addLiteral()
