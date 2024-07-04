@@ -25,6 +25,9 @@ public:
     bool check();
     int braketsCount;
 
+    void setCNFText();
+    void setDNFText();
+
 private:
     Ui::formula *ui;
     int row, column;

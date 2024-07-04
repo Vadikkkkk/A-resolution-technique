@@ -91,6 +91,7 @@ void MainWindow::showAddFormula()
     if (button == ui->addTheorem && theorem.isEmpty()) {
         lastButton = ui->addTheorem->text();
         setEnabled(false);
+        addFormula->setDNFText();
         addFormula->clearLine();
         addFormula->braketsCount = 0;
         addFormula->l = literals;
@@ -103,6 +104,7 @@ void MainWindow::showAddFormula()
     else if (button == ui->add_formula) {
         lastButton = ui->add_formula->text();
         setEnabled(false);
+        addFormula->setCNFText();
         addFormula->clearLine();
         addFormula->braketsCount = 0;
         addFormula->l = literals;

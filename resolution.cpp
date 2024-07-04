@@ -21,6 +21,7 @@ resolution::~resolution()
 void resolution::update()
 {
     ui->formulas->clear();
+
     for (const QString& str : formulas) {
         formulaToS(str);
     }
@@ -30,6 +31,7 @@ void resolution::update()
     applyResolution();
     ui->formulas->addItems(S);
     printResult();
+
 }
 
 QSet<QString> resolution::splitDisjunct(const QString &str)
@@ -141,6 +143,7 @@ void resolution::removeBrackets(QString &str)
 {
     str.remove('(');
     str.remove(')');
+    str.remove(' ');
 }
 
 QString resolution::joinDisjunct(const QSet<QString> &disjunct)

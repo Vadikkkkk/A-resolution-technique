@@ -43,6 +43,11 @@ private:
     void printResult();
 
 
+
+
+
+
+
 public slots:
     void close();
 

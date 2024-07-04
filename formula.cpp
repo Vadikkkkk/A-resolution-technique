@@ -44,14 +44,13 @@ bool formula::check()
             return set.contains(ch);
         };
 
-    QVector<QString> specialSet = {"*", "+", "->", "=="};
+    QVector<QString> specialSet = {"*", "+"};
     QString str = ui->lineEdit->text();
     int eq = 0;
     bool ch = true;
 
     if(braketsCount || str[0] == "+" || str[0] == "*" || str.contains("!+") ||
-            str.contains("!*") || str.contains("!->") || str.contains("(*")
-            || str.contains("(+") || str.contains("(-")) return false;
+            str.contains("!*") || str.contains("+*") || str.contains("*+")) return false;
 
     if(str.contains("-") && !str.contains("->")) return false;
 
@@ -77,6 +76,17 @@ bool formula::check()
     return true;
 }
 
+void formula::setCNFText()
+{
+    ui->label->setText("Введите КНФ формулы. \nПример ввода: A+B*!C.");
+}
+
+void formula::setDNFText()
+{
+    ui->label->setText("Введите ДНФ формулы. Пример ввода: A*B+B*!C. \nДанная "
+                       "формула эквивалентна формуле (A*B)+(B*!C).");
+}
+
 void formula::connectAllButtons()
 {
     connect(ui->close_button, &QPushButton::clicked, this, &formula::close);
@@ -84,7 +94,7 @@ void formula::connectAllButtons()
     connect(ui->save_button, &QPushButton::clicked, this, &formula::save);
     connect(this, &formula::backspacePressed, this, &formula::backspace);
 
-    buttons << "!" << "+" << "*" << "->" << "==" << "(" << ")";
+    buttons << "!" << "+" << "*";
     addButtonsToLayout(buttons);
 }
 
@@ -133,6 +143,17 @@ void formula::onButtonClicked(const QString &text)
     }
     else if (currentText.isEmpty() && !l.contains(text) && text != "!"){
 
+    }
+    else if (text == '!'){
+        if (currentText.isEmpty()){
+            ui->lineEdit->setText(currentText + text);
+        }
+        else if (currentText.at(currentText.size() - 1) == '!'){
+
+        }
+        else{
+            ui->lineEdit->setText(currentText + text);
+        }
     }
     else {
         ui->lineEdit->setText(currentText + text);
