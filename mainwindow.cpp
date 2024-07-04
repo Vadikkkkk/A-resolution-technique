@@ -188,7 +188,3 @@ void MainWindow::closeResolution()
     setEnabled(true);
     res->reject();
 }
-
-
-
-

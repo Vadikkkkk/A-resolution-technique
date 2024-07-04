@@ -97,7 +97,6 @@ void resolution::applyResolution()
             }
         }
         S.append(newDisjuncts);
-
     }
 }
 
@@ -173,9 +172,3 @@ void resolution::closeEvent(QCloseEvent *event)
 {
     emit closeSignal();
 }
-
-
-
-
-
-

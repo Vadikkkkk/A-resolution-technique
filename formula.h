@@ -6,8 +6,6 @@
 #include <QString>
 #include <QKeyEvent>
 
-
-
 namespace Ui {
 class formula;
 }
