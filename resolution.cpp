@@ -163,6 +163,11 @@ void resolution::printResult()
     }
 }
 
+void resolution::removeDoubleNot(QString &str)
+{
+    str.replace("!!", "");
+}
+
 void resolution::close()
 {
     emit closeSignal();

@@ -43,6 +43,14 @@ private:
     void printResult();
 
 
+
+    //приведение к кнф
+    void removeImplication(QString& str);//избавляемся от ->
+    void removeEq(QString& str);//избавляемся от ==
+
+    void removeDoubleNot(QString& str);
+
+
 public slots:
     void close();
 
