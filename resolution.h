@@ -48,6 +48,8 @@ private:
     void removeImplication(QString& str);//избавляемся от ->
     void removeEq(QString& str);//избавляемся от ==
 
+    void removeNotBrackets(QString& str);
+
     void removeDoubleNot(QString& str);
 
 
