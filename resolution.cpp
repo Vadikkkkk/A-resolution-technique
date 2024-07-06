@@ -22,6 +22,12 @@ void resolution::update()
 {
     ui->formulas->clear();
 
+<<<<<<< HEAD
+=======
+    //старое
+
+    /*
+>>>>>>> test
     for (const QString& str : formulas) {
         formulaToS(str);
     }
@@ -32,6 +38,36 @@ void resolution::update()
     ui->formulas->addItems(S);
     printResult();
 
+<<<<<<< HEAD
+=======
+
+    //новое
+
+    for (QString& str : formulas) {
+        ui->formulas->addItem(str);
+        removeEq(str);
+        removeImplication(str);
+        removeDoubleNot(str);
+        ui->formulas->addItem(str);
+    }
+    */
+
+    //NEW
+
+    for (QString& str : formulas) {//добавляем формулы
+        str.insert(0,'(');//обернуть в скобки
+        str.append(')');
+        ToCNF(str);
+        formulaToS(str);
+    }
+    theorem.insert(0,"!(");
+    theorem.append(')');
+    ToCNF(theorem);
+    formulaToS(theorem);
+    applyResolution();
+    ui->formulas->addItems(S);
+    printResult();
+>>>>>>> test
 }
 
 QSet<QString> resolution::splitDisjunct(const QString &str)
@@ -51,6 +87,7 @@ void resolution::applyResolution()
     bool newDisjunctAdded = true;
 
     while (newDisjunctAdded) {
+        //if(S.contains("0")) return;
         newDisjunctAdded = false;
         QStringList newDisjuncts;
 
@@ -164,6 +201,343 @@ void resolution::printResult()
                                                    "исходного множества формул! Так как из S "
                                                    "нельзя вывести пустой дизъюнкт '0'.");
     }
+}
+
+void resolution::removeImplication(QString &str)
+{
+    while(str.contains("->")){
+        for (int i = 0; i < str.size(); i++ ) {
+            if(str.at(i) == '-'){//импликация
+                QString left;
+                QString right;
+                int indexToReplace;
+
+                str.replace(i, 2, '+');//заменяем на +
+                if(str.at(i-1) == ')'){//если перед импликпцией скобка, то нужно вставить отрицание перед
+                    //скобкой
+                    int closedBrackets = 1;
+                    int openBrackets = 0;
+                    left += ")";
+                    for (int j = i - 2;j >= 0 ; j--) {
+                        if (str.at(j) == ')') closedBrackets++;
+                        if (str.at(j) == '(') openBrackets++;
+                        left.insert(0, str.at(j));
+                        if (closedBrackets == openBrackets){//нужно вставить отрицание
+                            indexToReplace = j;
+                            //str.insert(j, "(!");
+                            break;
+                        }
+                    }
+                }
+                if(left.isEmpty()){//если слева буква или ее отрицание
+                    left += str.at(i-1);
+                    if(i-2 >= 0){
+                        if (str.at(i-2) == '!'){
+                            left.insert(0, '!');
+                            indexToReplace = i-2;
+                        }
+                        else{
+                            indexToReplace = i-1;
+                        }
+                    }
+                    else{
+                        indexToReplace = i-1;
+                    }
+                }
+                if(str.at(i+1) == '('){//если справа скобка
+                    int closedBrackets = 0;
+                    int openBrackets = 1;
+                    right += "(";
+                    for (int j = i + 2; j < str.size(); j++ ) {//перебираем символы вправо
+                        right.append(str.at(j));
+                        if (str.at(j) == ')') closedBrackets++;
+                        if (str.at(j) == '(') openBrackets++;
+                        if (openBrackets == closedBrackets){
+                            break;
+                        }
+                    }
+                }
+                if(str.at(i+1) == '!' && str.at(i+2) != '('){//если справа отрицание буквы
+                    right = '!' + str.at(i+2);
+                }
+                if(str.at(i+1) != '!' && str.at(i+1) != '('){//если справа просто буква
+                    right += str.at(i+1);
+                }
+                if(str.at(i+1) == '!' && str.at(i+2) == '('){//если справа отрицание скобки
+                    int openBrackets = 1;
+                    int closedBrackets = 0;
+                    right += "!(";
+                    for (int j = i + 3; j < str.size(); j++ ) {//перебираем символы вправо
+                        right.append(str.at(j));
+                        if (str.at(j) == ')') closedBrackets++;
+                        if (str.at(j) == '(') openBrackets++;
+                        if (openBrackets == closedBrackets){
+                            break;
+                        }
+                    }
+                }
+                QString newStr = "(!" + left + "+" + right + ")";
+                str.replace(indexToReplace, left.size() + 1 + right.size(), newStr);
+                QRegularExpression re("!!");
+                str.replace(re, "");
+            }
+        }
+    }
+}
+
+void resolution::removeEq(QString &str)
+{
+    while(str.contains("==")){
+        for (int i = 0; i < str.size(); i++){
+            if(str.at(i) == '='){//индекс эквивалентности
+                QString left;
+                QString right;
+                int indexToReplace;
+                str.replace(i, 2, '*');
+                //
+                if(str.at(i-1) == ')'){//если слева скобка
+                    int closedBrackets = 1;
+                    int openBrackets = 0;
+
+                    left += ")";
+                    for (int j = i - 2;j >= 0 ; j--){//перебираем символы влево
+                        left.insert(0,str.at(j));//добавляем в левую часть
+                        if (str.at(j) == ')') closedBrackets++;
+                        if (str.at(j) == '(') openBrackets++;
+
+                        if (closedBrackets == openBrackets){//нужно вставить отрицание
+                            indexToReplace = j;
+                            break;
+                        }
+                    }
+                }
+                if(str.at(i+1) == '('){//если справа скбока
+                    int openBrackets = 1;
+                    int closedBrackets = 0;
+                    right += "(";
+                    for (int j = i + 2; j < str.size(); j++ ) {//перебираем символы вправо
+                        right.append(str.at(j));
+                        if (str.at(j) == ')') closedBrackets++;
+                        if (str.at(j) == '(') openBrackets++;
+                        if (openBrackets == closedBrackets){
+                            break;
+                        }
+                    }
+                }
+                if(str.at(i+1) == '!' && str.at(i+2) != '('){//если справа отрицание буквы
+                    right = '!' + str.at(i+2);
+                }
+                if(str.at(i+1) == '!' && str.at(i+2) == '('){//если справа отрицание скобки
+                    int openBrackets = 1;
+                    int closedBrackets = 0;
+                    right += "!(";
+                    for (int j = i + 3; j < str.size(); j++ ) {//перебираем символы вправо
+                        right.append(str.at(j));
+                        if (str.at(j) == ')') closedBrackets++;
+                        if (str.at(j) == '(') openBrackets++;
+                        if (openBrackets == closedBrackets){
+                            break;
+                        }
+                    }
+                }
+                if (str.at(i+1) != '(' && str.at(i+1) != '!'){//если справа просто буква
+                    right += str.at(i+1);
+                }
+                if(left.isEmpty()){//если слева буква или ее отрицание
+                    left += str.at(i-1);
+                    if(i-2 >= 0){
+                        if (str.at(i-2) == '!'){
+                            left.insert(0, '!');
+                            indexToReplace = i-2;
+                        }
+                        else{
+                            indexToReplace = i-1;
+                        }
+                    }
+                    else{
+                        indexToReplace = i-1;
+                    }
+                }
+
+
+                QString newStr = "((!" + left + "+" + right + ")*(" + left +"+!" + right + "))";
+                str.replace(indexToReplace, left.size() + 1 + right.size(), newStr);
+                QRegularExpression re("!!");
+                str.replace(re, "");
+            }
+        }
+    }
+}
+
+void resolution::removeNotBrackets(QString &str)
+{
+    while(str.contains("!(")){
+        for (int i = 0; i < str.size(); i++) {
+            if(str.at(i) == '!'){//отрицание
+
+                QString subString;
+                QString left;
+                QString right;
+                QString operation;
+                int operationIndex = 0;
+                int endIndex;
+                if(str.at(i+1) != '('){//если отрицание литерала, то ничего не делаем
+
+                }
+                else{//если отрицание скобки
+                    int openBrackets = 1;
+                    int closedBrackets = 0;
+                    int level = 0;
+                    for (int j = i + 2; i < str.size(); j++) {
+                        if (str.at(j) == '('){
+                            level++;
+                            openBrackets++;
+                        }
+                        if (str.at(j) == ')'){
+                            level--;
+                            closedBrackets++;
+                        }
+                        if(level == 0 && (str.at(j) == '+' || str.at(j) == '*')){
+                            if(str.at(j) == '+') operation = "*";
+                            else operation = "+";
+                            operationIndex = j;
+                        }
+                        subString.append(str.at(j));
+                        if (openBrackets == closedBrackets){
+                            subString.chop(1);
+                            endIndex = j;
+                            break;
+                        }
+                    }
+                    if(operationIndex != 0){//внутри есть операция
+                        left = str.mid(i+2, operationIndex - i - 2);//левая часть внутри скобки
+                        right = str.mid(operationIndex + 1, endIndex - operationIndex - 1);
+                        str.replace(i, endIndex - i + 1, "(!(" + left + ")" + operation + "!(" + right + "))");
+                    }
+                    else{//внутри нет операции
+                        str.remove(i+1, 1);
+                        str.remove(endIndex-1, 1);
+                    }
+                }
+            }
+        }
+    }
+}
+
+void resolution::removeDoubleNot(QString &str)
+{
+    QRegularExpression re("!!");
+    str.replace(re,"");
+}
+
+void resolution::replaceParentheses(QString &str)
+{
+    QString previous = str;
+    do{
+        previous = str;
+
+        for(int i = 0; i < str.size(); i++){
+            int endIndex;
+            QString subString;
+            QString oprationsOnLevelZero;
+            int openBrackets = 1;
+            int closedBrackets = 0;
+            int level = 0;
+            int lastOpIndex = i + 1;
+            QStringList slag;
+            QStringList mul;
+            QString res;
+            QString lastOp;
+
+            if(str.at(i) == '('){
+                for(int j = i + 1; j < str.size(); j++){
+                    subString.append(str.at(j));
+                    if (str.at(j) == '('){
+                        level++;
+                        openBrackets++;
+                    }
+                    if (str.at(j) == ')'){
+                        level--;
+                        closedBrackets++;
+                    }
+                    if(level == 0 && str.at(j) == '+'){
+                        oprationsOnLevelZero.append('+');
+                    }
+                    if(level == 0 && str.at(j) == '*'){
+                        oprationsOnLevelZero.append('*');
+                    }
+                    if (openBrackets == closedBrackets){
+                        subString.chop(1);
+                        endIndex = j;
+                        break;
+                    }
+                }
+                if(oprationsOnLevelZero.contains('*') && !oprationsOnLevelZero.contains('+')){//CNF
+                    str.replace(i, endIndex - i + 1, subString);
+                    continue;
+                }
+                if(oprationsOnLevelZero.isEmpty()){//лишние скобки
+                    str.replace(i, endIndex - i + 1, subString);
+                    continue;
+                }
+                if(oprationsOnLevelZero.contains('+') && !oprationsOnLevelZero.contains('*')){//толко плюсы
+                    continue;
+                }
+                if(oprationsOnLevelZero.contains('*') && oprationsOnLevelZero.contains('+')){
+                    QString tmp;
+                    int level = 0;
+                    bool lastOpIsMul = false;
+                    for(int j = 0; j < subString.size(); j++){
+                        if(subString.at(j) == '(') level++;
+                        if(subString.at(j) == ')') level--;
+                        tmp.append(subString.at(j));
+                        if((subString.at(j) == '*' || lastOpIsMul) && level == 0 && (subString.at(j) == '*' || subString.at(j) == '+')){
+                            tmp.chop(1);
+                            mul.append(tmp);
+                            tmp.clear();
+                            lastOpIndex = j;
+                            if(subString.at(j) == '+'){
+                                lastOpIsMul = false;
+                            }
+                            if(subString.at(j) == '*'){
+                                lastOpIsMul = true;
+                            }
+                            continue;
+                        }
+                        if(subString.at(j) == '+' && level == 0){
+                            tmp.chop(1);
+                            slag.append(tmp);
+                            tmp.clear();
+                            lastOpIndex = j;
+                            lastOpIsMul = false;
+                        }
+                    }
+                    if(subString.at(lastOpIndex) == '+'){
+                        slag.append(subString.mid(lastOpIndex+1));
+                    }
+                    if(subString.at(lastOpIndex) == '*'){
+                        mul.append(subString.mid(lastOpIndex+1));
+                    }
+                    res = "(" + slag.join("+") + "+" + mul.at(0) + ")*(";
+                    mul.removeFirst();
+                    res += slag.join("+") + "+" + mul.join('*') + ")";
+                }
+                str.replace(i, subString.size()+2, res);
+                res.clear();
+                slag.clear();
+                mul.clear();
+            }
+        }
+    }while(str != previous);
+}
+
+void resolution::ToCNF(QString &str)
+{
+    removeEq(str);
+    removeImplication(str);
+    removeNotBrackets(str);
+    removeDoubleNot(str);
+    replaceParentheses(str);
 }
 
 void resolution::close()

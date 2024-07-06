@@ -50,7 +50,12 @@ bool formula::check()
     bool ch = true;
 
     if(braketsCount || str[0] == "+" || str[0] == "*" || str.contains("!+") ||
+<<<<<<< HEAD
             str.contains("!*") || str.contains("+*") || str.contains("*+")) return false;
+=======
+            str.contains("!*") || str.contains("!->") || str.contains("(*")
+            || str.contains("(+") || str.contains("(-") || str.contains("+*")) return false;
+>>>>>>> test
 
     if(str.contains("-") && !str.contains("->")) return false;
 
