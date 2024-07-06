@@ -32,7 +32,7 @@ private:
     void applyResolution();
     QString negateLiteral(const QString& literal);
 
-    QString negateTheorem(const QString& dnf);
+    QString negateTheorem(const QString& dnf);// не понадобится по идее
     void formulaToS(const QString& str);
 
 
@@ -45,12 +45,15 @@ private:
 
 
     //приведение к кнф
-    void removeImplication(QString& str);//избавляемся от ->
-    void removeEq(QString& str);//избавляемся от ==
+    void removeImplication(QString& str);//избавляемся от -> Рабочая
+    void removeEq(QString& str);//избавляемся от ==  Рабочая
 
-    void removeNotBrackets(QString& str);
+    void removeNotBrackets(QString& str);//избавляемся от !( Рабочая
 
-    void removeDoubleNot(QString& str);
+    void removeDoubleNot(QString& str);//избавляемся от двойного отрицания Рабочая
+    void replaceParentheses(QString& str);//упрощение
+
+    void ToCNF(QString& str);
 
 
 public slots:
