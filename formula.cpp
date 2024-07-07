@@ -47,11 +47,9 @@ bool formula::check()
     QVector<QString> specialSet = {"*", "+", "->", "=="};
     QString str = ui->lineEdit->text();
     int eq = 0;
-    bool ch = true;
 
-    if(braketsCount || str[0] == "+" || str[0] == "*" || str.contains("!+") ||
-            str.contains("!*") || str.contains("!->") || str.contains("(*")
-            || str.contains("(+") || str.contains("(-") || str.contains("+*")) return false;
+
+    if(braketsCount || str[0] == "+" || str[0] == "*") return false;
 
     if(str.contains("-") && !str.contains("->")) return false;
 
@@ -61,7 +59,7 @@ bool formula::check()
             return false;
         }
         if (str[i] == "=") eq++;
-        if (l.contains(QString(str[i]))) ch = false;
+
 
         // Check if the current character and the next character are both in specialSet
         for (const QString &special : specialSet) {
@@ -72,7 +70,7 @@ bool formula::check()
             if (str.endsWith(special) || str.endsWith("!")) return false;
         }
     }
-    if(eq % 2 || ch) return false;
+    if(eq % 2) return false;
 
     return true;
 }
@@ -96,7 +94,6 @@ formula::~formula()
 
 void formula::updateButtons()
 {
-
     QLayoutItem *item;
     while ((item = ui->gridLayout->takeAt(0)) != nullptr) {
         delete item->widget();
@@ -119,20 +116,44 @@ void formula::close()
 void formula::onButtonClicked(const QString &text)
 {
     QString currentText = ui->lineEdit->text();
+    QString operations = "+*->==!(";
 
-    if(text == "("){
+    if(text == "(" && !currentText.isEmpty()){
+        if(!l.contains(currentText.at(currentText.size() - 1))){
+            braketsCount++;
+            ui->lineEdit->setText(currentText + text);
+        }
+        else{
+
+        }
+    }
+    else if (text == "(" && currentText.isEmpty()){
         braketsCount++;
         ui->lineEdit->setText(currentText + text);
     }
     else if (text == ")" && braketsCount == 0){
         QMessageBox::information(this, "Ошибка!", "Нет открытых скобок!");
     }
-    else if (text == ")" && braketsCount > 0){
-        braketsCount--;
-        ui->lineEdit->setText(currentText + text);
+    else if (text == ")" && braketsCount > 0) {
+        if(braketsCount > 0 && (currentText.at(currentText.size() - 1) == ')' ||
+                                l.contains(currentText.at(currentText.size() - 1)))){
+            braketsCount--;
+            ui->lineEdit->setText(currentText + text);
+        }
+        else{
+
+        }
     }
     else if (currentText.isEmpty() && !l.contains(text) && text != "!"){
 
+    }
+    else if (text == "+" || text == "->" || text == "*" || text == "==") {
+        if(operations.contains(currentText.at(currentText.size() - 1))){
+
+        }
+        else{
+            ui->lineEdit->setText(currentText + text);
+        }
     }
     else {
         ui->lineEdit->setText(currentText + text);

@@ -17,17 +17,18 @@ class formula : public QDialog
 public:
     explicit formula(QWidget *parent = nullptr);
     ~formula();
-    QVector<QString> l;
+    QVector<QString> l;//массив литералов
+    int braketsCount;
+
     void updateButtons();
     void addButtonsToLayout(const QVector<QString> &vector);
     QString getFormula();
     void clearLine();
     bool check();
-    int braketsCount;
 
 private:
     Ui::formula *ui;
-    int row, column;
+    int row, column;//для располо
 
     QVector<QString> buttons;
 

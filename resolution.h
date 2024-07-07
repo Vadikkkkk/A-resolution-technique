@@ -28,21 +28,15 @@ private:
 
 
     QSet<QString> splitDisjunct(const QString& str);
-    QString combineDisjuncts(const QSet<QString>& disjunct1, const QSet<QString>& disjunct2);
-    void applyResolution();
-    QString negateLiteral(const QString& literal);
 
-    QString negateTheorem(const QString& dnf);// не понадобится по идее
+
+
     void formulaToS(const QString& str);
-
+    void applyResolution();
 
     void removeBrackets(QString& str);
 
-    QString joinDisjunct(const QSet<QString>& disjunct);
-
-    void printResult();
-
-
+    void printResult(QString t);
 
     //приведение к кнф
     void removeImplication(QString& str);//избавляемся от -> Рабочая
@@ -54,6 +48,9 @@ private:
     void replaceParentheses(QString& str);//упрощение
 
     void ToCNF(QString& str);
+
+    bool hasNoContradiction(const QString &formula);
+    void removeDuplicateLiterals(QString &formula);
 
 
 public slots:

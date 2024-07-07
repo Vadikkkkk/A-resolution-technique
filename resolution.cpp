@@ -20,60 +20,26 @@ resolution::~resolution()
 
 void resolution::update()
 {
-    ui->formulas->clear();
-
-    //старое
-
-    /*
-    for (const QString& str : formulas) {
-        formulaToS(str);
-    }
-
-    formulaToS(negateTheorem(theorem));
-
-    applyResolution();
-    ui->formulas->addItems(S);
-    printResult();
-
-
-    //новое
-
-    for (QString& str : formulas) {
-        ui->formulas->addItem(str);
-        removeEq(str);
-        removeImplication(str);
-        removeDoubleNot(str);
-        ui->formulas->addItem(str);
-    }
-    */
-
-    //NEW
-
-    for (QString& str : formulas) {//добавляем формулы
+    ui->formulas->clear();//отображение дизъюнктов и вывода из S
+    for (QString& str : formulas) {//добавляем дизъюнкты
         str.insert(0,'(');//обернуть в скобки
         str.append(')');
         ToCNF(str);
         formulaToS(str);
     }
+    QString tmp = theorem;
     theorem.insert(0,"!(");
     theorem.append(')');
     ToCNF(theorem);
     formulaToS(theorem);
     applyResolution();
     ui->formulas->addItems(S);
-    printResult();
+    printResult(tmp);
 }
 
 QSet<QString> resolution::splitDisjunct(const QString &str)
 {
     return QSet<QString>::fromList(str.split("+"));
-}
-
-QString resolution::combineDisjuncts(const QSet<QString> &disjunct1, const QSet<QString> &disjunct2)
-{
-    QSet<QString> tmp = disjunct1;
-    QSet<QString> result = tmp.unite(disjunct2);
-    return QStringList(result.toList()).join("+");
 }
 
 void resolution::applyResolution()
@@ -87,9 +53,8 @@ void resolution::applyResolution()
 
         for (int i = 0; i < S.size(); ++i) {
             for (int j = i + 1; j < S.size(); ++j) {
-                removeBrackets(S[i]);
-                removeBrackets(S[j]);
-                QSet<QString> disjunct1 = splitDisjunct(S[i]);
+
+                QSet<QString> disjunct1 = splitDisjunct(S[i]);//множество слагаемых
                 QSet<QString> disjunct2 = splitDisjunct(S[j]);
 
                 bool foundContradiction = false;
@@ -97,7 +62,7 @@ void resolution::applyResolution()
                 QString negatedLiteralToRemove;
 
                 for (const QString& literal : disjunct1) {
-                    QString negatedLiteral = (literal.startsWith("!") ? literal.mid(1) : "!" + literal);
+                    QString negatedLiteral = (literal.startsWith("!") ? literal.at(1) : "!" + literal);
 
                     if (disjunct2.contains(negatedLiteral)) {
                         foundContradiction = true;
@@ -107,7 +72,7 @@ void resolution::applyResolution()
                     }
                 }
 
-                if (foundContradiction) {
+                if (foundContradiction) {//елси найдены
                     QSet<QString> resolvent = disjunct1;
                     resolvent.unite(disjunct2);
                     resolvent.remove(literalToRemove);
@@ -115,13 +80,14 @@ void resolution::applyResolution()
 
                     if (resolvent.isEmpty()) {
                         // В случае, если resolvent пустое, добавляем строку "0"
-                        if (!S.contains("0") && !newDisjuncts.contains("0")) {
+                        if (!S.contains("0")) {
                             newDisjuncts.append("0");
                             newDisjunctAdded = true;
                         }
                     } else {
                         QString resolventStr = QStringList(resolvent.toList()).join("+");
-                        if (!S.contains(resolventStr) && !newDisjuncts.contains(resolventStr)) {
+                        removeDuplicateLiterals(resolventStr);
+                        if (!S.contains(resolventStr) && hasNoContradiction(resolventStr)) {
                             newDisjuncts.append(resolventStr);
                             newDisjunctAdded = true;
                         }
@@ -129,45 +95,22 @@ void resolution::applyResolution()
                 }
             }
         }
+        newDisjuncts.removeDuplicates();
         S.append(newDisjuncts);
     }
 }
 
-QString resolution::negateLiteral(const QString &literal)
-{
-    if (literal.startsWith('!')) {
-        return literal.mid(1); // Убираем '!'
-    } else {
-        return '!' + literal; // Добавляем '!'
-    }
-}
-
-QString resolution::negateTheorem(const QString &dnf)
-{
-    QStringList disjuncts = dnf.split("+");
-    QStringList negatedDisjuncts;
-
-    for (const QString& disjunct : disjuncts) {
-        QStringList literals = disjunct.split('*');
-        QStringList negatedLiterals;
-
-        for (const QString& literal : literals) {
-            // Инвертирование литералов
-            negatedLiterals.append(negateLiteral(literal));
-        }
-        negatedDisjuncts.append(negatedLiterals.join("+"));
-    }
-    QString res = negatedDisjuncts.join("*");
-    return res;
-}
-
 void resolution::formulaToS(const QString &str)
 {
-    QStringList substrings = str.split('*');
-    for (const QString& s : substrings) {
-        S.append(s);
+    if(!str.isEmpty()){
+        QStringList substrings = str.split('*');
+        for (QString& s : substrings) {
+            removeBrackets(s);
+            S.append(s);
+        }
+        S.removeDuplicates();
     }
-    S.removeDuplicates();
+
 }
 
 void resolution::removeBrackets(QString &str)
@@ -176,21 +119,17 @@ void resolution::removeBrackets(QString &str)
     str.remove(')');
 }
 
-QString resolution::joinDisjunct(const QSet<QString> &disjunct)
-{
-    return QStringList(disjunct.toList()).join('+');
-}
 
-void resolution::printResult()
+void resolution::printResult(QString t)
 {
 
     if (S.contains("0")){
-        ui->result->setText("Формула " + theorem + " является логическим следствием "
+        ui->result->setText("Формула " + t + " является логическим следствием "
                                                    "исходного множества формул! Так как из S"
                                                    " можно вывести пустой дизъюнкт '0'.");
     }
     else{
-        ui->result->setText("Формула " + theorem + " не является логическим следствием "
+        ui->result->setText("Формула " + t + " не является логическим следствием "
                                                    "исходного множества формул! Так как из S "
                                                    "нельзя вывести пустой дизъюнкт '0'.");
     }
@@ -531,7 +470,64 @@ void resolution::ToCNF(QString &str)
     removeNotBrackets(str);
     removeDoubleNot(str);
     replaceParentheses(str);
+
+    QStringList res;
+    QStringList tmp = str.split('*');
+    for (QString& s : tmp) {
+        removeBrackets(s);
+        if(hasNoContradiction(s)){
+            removeDuplicateLiterals(s);
+            res.append(s);
+        }
+    }
+
+    str = res.join('*');
+
 }
+
+bool resolution::hasNoContradiction(const QString &formula)
+{
+    QSet<QString> literals;
+    QStringList parts = formula.split('+');
+    for (const QString &part : parts) {
+        QString literal = part.trimmed();
+        if (literal.startsWith('!')) {
+            // Проверка на наличие отрицательного литерала
+            QString positiveLiteral = literal.mid(1);
+            if (literals.contains(positiveLiteral)) {
+                return false;
+            }
+            literals.insert(literal);
+        } else {
+            // Проверка на наличие положительного литерала
+            QString negativeLiteral = '!' + literal;
+            if (literals.contains(negativeLiteral)) {
+                return false;
+            }
+            literals.insert(literal);
+        }
+    }
+    return true;
+}
+
+void resolution::removeDuplicateLiterals(QString &formula)
+{
+    QSet<QString> uniqueLiterals;
+    QStringList parts = formula.split('+');
+    QStringList result;
+
+    for (const QString &part : parts) {
+        QString literal = part.trimmed();
+        if (!uniqueLiterals.contains(literal)) {
+            uniqueLiterals.insert(literal);
+            result.append(literal);
+        }
+    }
+
+    formula = result.join('+');
+}
+
+
 
 void resolution::close()
 {

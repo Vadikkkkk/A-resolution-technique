@@ -22,9 +22,9 @@ public:
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
+    Ui::MainWindow* ui;
 
-    int count;
+    int count;//счетчик литералов
     QVector<QString> literals;//массив литералов
     QVector<QString> formulas;//массив допущений
     QString theorem;//теорема
@@ -32,7 +32,7 @@ private:
     QString lastButton;
 
     formula* addFormula;
-    resolution *res;
+    resolution* res;
 
     void updateList();//обновляет список переменных
     void updateFormulas();//обновляет список формул
